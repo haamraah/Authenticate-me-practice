@@ -1,11 +1,11 @@
 {
   "dependencies": {
-    "express-validator": "^7.0.1"
+    "express-validator": "^7.0.1",
+    "pg": "^8.10.0"
   },
   "name": "practice-for-week-12-authenticate-me-long-practice",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "install": "npm --prefix backend install backend",
     "dev:backend": "npm install --prefix backend start",
