@@ -2,26 +2,60 @@
 const router = require('express').Router();
 
 
+const sessionRouter = require('./session.js');
+const usersRouter = require('./users.js');
 
+router.use('/session', sessionRouter);
+
+router.use('/users', usersRouter);
 // to restore csrf
 router.get('/csrf/restore', function (req, res) {
     res.cookie('XSRF-TOKEN', req.csrfToken());
     res.send('XSRF-TOKEN restored!');
 });
-
-// GET /api/set-token-cookie
-const { setTokenCookie } = require('../../utils/auth.js');
-const { User } = require('../../db/models');
-router.get('/set-token-cookie', async (_req, res) => {
-  const user = await User.findOne({
-      where: {
-        username: 'shashu'
-      }
-    });
-  setTokenCookie(res, user);
-  return res.json({ user });
+router.post('/test', (req, res) => {
+  res.json({ requestBody: req.body });
 });
+
+module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // TESTING ROUTES
+
+// // GET /api/set-token-cookie
+// const { setTokenCookie } = require('../../utils/auth.js');
+// const { User } = require('../../db/models');
+// router.get('/set-token-cookie', async (_req, res) => {
+//   const user = await User.findOne({
+//       where: {
+//         username: 'shashu'
+//       }
+//     });
+//   setTokenCookie(res, user);
+//   return res.json({ user });
+// });
 // // GET /api/restore-user
 // const { restoreUser } = require('../../utils/auth.js');
 // router.get(
@@ -40,5 +74,3 @@ router.get('/set-token-cookie', async (_req, res) => {
 //     return res.json(req.user);
 //   }
 // );
-
-module.exports = router;
