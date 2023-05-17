@@ -1,6 +1,11 @@
+import TweetList from './TweetList';
+import CreateTweet from './CreateTweet';
 function App() {
   return (
-    <h1>Hello from App</h1>
+    <>
+      <TweetList />
+      <CreateTweet/>
+    </>
   );
 }
 
