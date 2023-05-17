@@ -1,11 +1,13 @@
-// backend/routes/api/session.js
 const express = require('express')
-const router = express.Router();
+const asyncHandler = require('express-async-handler');
+
 const { setTokenCookie, restoreUser } = require('../../utils/auth');
-const { User } = require('../../db/models');
+const { User } = require('../../db/models')
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
-// validate credentials and password
+const router = express.Router();
+
+
 const validateLogin = [
     check('credential')
         .exists({ checkFalsy: true })
@@ -20,7 +22,7 @@ const validateLogin = [
 router.post(
     '/',
     validateLogin,
-    async (req, res, next) => {
+    asyncHandler(async (req, res, next) => {
         const { credential, password } = req.body;
 
         const user = await User.login({ credential, password });
@@ -38,6 +40,15 @@ router.post(
         return res.json({
             user
         });
+    })
+);
+
+// Log out
+router.delete(
+    '/',
+    (_req, res) => {
+        res.clearCookie('token');
+        return res.json({ message: 'success' });
     }
 );
 
@@ -52,15 +63,6 @@ router.get(
                 user: user.toSafeObject()
             });
         } else return res.json({});
-    }
-);
-
-// Log out
-router.delete(
-    '/',
-    (_req, res) => {
-        res.clearCookie('token');
-        return res.json({ message: 'success' });
     }
 );
 module.exports = router;
