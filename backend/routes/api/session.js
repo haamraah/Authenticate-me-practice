@@ -18,6 +18,26 @@ const validateLogin = [
         .withMessage('Please provide a password.'),
     handleValidationErrors
 ];
+
+const validateSignup = [
+    check('username')
+        .exists({ checkFalsy: true })
+        .notEmpty()
+        .withMessage('Please provide a valid username.')
+        .isLength({ min: 4, max: 30 })
+        .withMessage('Username must be between 4 and 30 characters.'),
+    check('email')
+        .exists({ checkFalsy: true })
+        .notEmpty()
+        .isEmail()
+        .withMessage('Please provide a valid email.'),
+    check('password')
+        .exists({ checkFalsy: true })
+        .withMessage('Please provide a password.'),
+    handleValidationErrors
+];
+
+
 // Log in
 router.post(
     '/',
@@ -31,6 +51,31 @@ router.post(
             const err = new Error('Login failed');
             err.status = 401;
             err.title = 'Login failed';
+            err.errors = ['The provided credentials were invalid.'];
+            return next(err);
+        }
+
+        await setTokenCookie(res, user);
+
+        return res.json({
+            user
+        });
+    })
+);
+
+// sign up
+router.post(
+    '/',
+    validateSignup,
+    asyncHandler(async (req, res, next) => {
+        const { username, email, password } = req.body;
+
+        const user = await User.signup({ username, email, password });
+
+        if (!user) {
+            const err = new Error('Signup failed');
+            err.status = 401;
+            err.title = 'Signup failed';
             err.errors = ['The provided credentials were invalid.'];
             return next(err);
         }

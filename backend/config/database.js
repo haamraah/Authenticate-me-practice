@@ -1,16 +1,30 @@
+// backend/config/database.js
 const config = require('./index');
-require('dotenv').config();
+
+const db = config.db;
+const username = db.username;
+const password = db.password;
+const database = db.database;
+const host = db.host;
 
 module.exports = {
   development: {
-    storage: config.dbFile,
+    username,
+    password,
+    database,
+    host,
     dialect: 'postgres',
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-    host: process.env.DB_HOST,
-    seederStorage: "sequelize",
-    logQueryParameters: true,
-    typeValidation: true
+    seederStorage: 'sequelize'
+  },
+  production: {
+    use_env_variable: 'DATABASE_URL',
+    dialect: 'postgres',
+    seederStorage: 'sequelize',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
   }
 };
